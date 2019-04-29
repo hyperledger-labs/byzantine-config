@@ -8,9 +8,11 @@ Pre-built executable binaries are available in this [repo](https://github.com/in
 
 ### Installing and Starting 
 
-    $ npm install 
+Prerequisites: NPM and Node V8.12.0
 
-    $ npm run electron-dev
+    $ yarn install 
+
+    $ yarn run electron-dev
        
 ### Build Exectuable 
 
