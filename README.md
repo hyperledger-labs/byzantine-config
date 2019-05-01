@@ -72,3 +72,9 @@ Upon successfull execution of the `update` command (above), you should see a mes
 `Successfully submitted channel update`
 
 You can verify the execution by inspecting the latest/current HLF configuration block.
+
+## More Information
+
+For more information on Byzantine Config, please see [ByzantineTools/byzantineconfig](https://byzantinetools.com/byzantine-config/).
+
+
