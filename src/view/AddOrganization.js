@@ -14,141 +14,183 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 const electron = window.require('electron');
 
 class AddOrganization extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { name: '', domain: '', peers: 2, users: 1 };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = { name: "", domain: "", peers: 2, users: 1 };
+  cancelClick = event => {
+    event.preventDefault();
+    this.props.history.push('/config');
+  };
+
+  handleChange = event => {
+    this.setState({ [event.target.id]: event.target.value });
+  };
+
+  generateClick = e => {
+    e.preventDefault();
+
+    // validate
+    let status = null;
+
+    if (this.state.name === undefined || this.state.name === '') {
+      status = 'Organization name required ';
+    } else if (this.state.domain === undefined || this.state.domain === '') {
+      status = 'Domain name required ';
+    } else {
+      global.orgyaml = {
+        name: this.state.name,
+        domain: this.state.domain,
+        peers: this.state.peers,
+        users: this.state.users
+      };
+      var ipcRenderer = electron.ipcRenderer;
+      status = ipcRenderer.sendSync('orggen', JSON.stringify(this.state));
+      this.props.history.push('/genartifacts');
     }
 
-    cancelClick = event => {   
-       event.preventDefault();
-       this.props.history.push("/config");
-    }
+    this.setState({ status: status });
+  };
 
-    handleChange = event => {
-        this.setState({ [event.target.id]: event.target.value });
-    }
+  addArtifactsClick = e => {
+    e.preventDefault();
+    this.props.history.push('/genartifacts');
+  };
 
-    generateClick = e => {
-        e.preventDefault();
+  render() {
+    let Status = <div />;
 
-        // validate
-        let status = null;
-
-        if (this.state.name === undefined || this.state.name === "") {
-           status = "Organization name required ";
-        } else if (this.state.domain === undefined || this.state.domain === "") {
-            status = "Domain name required ";
-        } else {
-
-        global.orgyaml = { "name": this.state.name, "domain": this.state.domain, "peers": this.state.peers, "users": this.state.users };
-        var ipcRenderer = electron.ipcRenderer;
-           status = ipcRenderer.sendSync('orggen', JSON.stringify(this.state));
-           this.props.history.push("/genartifacts");
-        }
-
-        this.setState({ status: status });
-    }
-
-    addArtifactsClick = e => {
-        e.preventDefault();
-        this.props.history.push("/genartifacts");
-
-    }
-
-
-
-    render() {
-
-        let Status = <div></div>;
-
-        if (this.state.status) {
-
-
-            if (this.state.status.indexOf('SUCCESS:') >= 0) {
-
-                Status = <div class="alert alert-success" role="alert">
-                    {this.state.status}...  <button id="genconfigtx" onClick={this.addArtifactsClick} name="genconfig" className="btn btn-primary">Generate Config Tx</button>
-                </div>
-
-            } else {
-
-                Status = <div class="alert alert-danger" role="alert">
-                    {this.state.status}
-                </div>
-
-            }
-
-        }
-
-
-        return (
-
-
-            <form className="form-horizontal">
-                <fieldset>
-                    <legend>Add Org, Generate Crypto Material for Channel <b>{global.config.channelid}</b> <button class="btn btn-link" onClick={this.cancelClick}>Cancel</button> </legend>
-                    <div className="control-group">
-                        <label className="control-label" for="name">Name:</label>
-                        <div className="controls">
-                            <input id="name" name="textinput-0" type="text" onChange={this.handleChange} value={this.state.name} placeholder="Org Name" className="input-xlarge" />
-                            <p className="help-block">Orgnization name</p>
-                        </div>
-                    </div>
-
-                    <div className="control-group">
-                        <label class="control-label" for="domain">Domain:</label>
-                        <div className="controls">
-                            <input id="domain" name="textinput-1" type="text" onChange={this.handleChange} value={this.state.domain} placeholder="Org Domain" className="input-xlarge" />
-                            <p className="help-block">Domain</p>
-                        </div>
-                    </div>
-
-                    <div className="control-group">
-                        <label class="control-label" for="peers">Peers:</label>
-                        <div className="controls">
-                            <input id="peers" size="4" name="textinput-1" type="text" onChange={this.handleChange} value={this.peers} placeholder="2" className="input-xlarge" />
-                            <p className="help-block">Also referred to as templates</p>
-                        </div>
-                    </div>
-
-
-                    <div className="control-group">
-                        <label class="control-label" for="users">Users:</label>
-                        <div className="controls">
-                            <input id="users" size="4" name="textinput-1" type="text" onChange={this.handleChange} value={this.users} placeholder="1" className="input-xlarge" />
-                        </div>
-                    </div>
-
-
-                    <div className="control-group">
-                        <label className="control-label" for="doublebutton-0"></label>
-                        <div className="controls">
-                            <button id="generate" onClick={this.generateClick} name="doublebutton-0" className="btn btn-success">Generate Org Artifacts</button>
-
-                        </div>
-                    </div>
-
-                    <div className="control-group">
-                        <label className="control-label" for="doublebutton-0"></label>
-                        <div className="controls">
-                            {Status}
-                        </div>
-                    </div>
-
-                </fieldset>
-            </form>
-
-
-
-
-
+    if (this.state.status) {
+      if (this.state.status.indexOf('SUCCESS:') >= 0) {
+        Status = (
+          <div class="alert alert-success" role="alert">
+            {this.state.status}...{' '}
+            <button
+              id="genconfigtx"
+              onClick={this.addArtifactsClick}
+              name="genconfig"
+              className="btn btn-primary">
+              Generate Config Tx
+            </button>
+          </div>
         );
+      } else {
+        Status = (
+          <div class="alert alert-danger" role="alert">
+            {this.state.status}
+          </div>
+        );
+      }
     }
+
+    return (
+      <form className="form-horizontal">
+        <fieldset>
+          <legend>
+            Add Org, Generate Crypto Material for Channel <b>{global.config.channelid}</b>{' '}
+            <button class="btn btn-link" onClick={this.cancelClick}>
+              Cancel
+            </button>{' '}
+          </legend>
+          <div className="control-group">
+            <label className="control-label" for="name">
+              Name:
+            </label>
+            <div className="controls">
+              <input
+                id="name"
+                name="textinput-0"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.name}
+                placeholder="Org Name"
+                className="input-xlarge"
+              />
+              <p className="help-block">Orgnization name</p>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label class="control-label" for="domain">
+              Domain:
+            </label>
+            <div className="controls">
+              <input
+                id="domain"
+                name="textinput-1"
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.domain}
+                placeholder="Org Domain"
+                className="input-xlarge"
+              />
+              <p className="help-block">Domain</p>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label class="control-label" for="peers">
+              Peers:
+            </label>
+            <div className="controls">
+              <input
+                id="peers"
+                size="4"
+                name="textinput-1"
+                type="text"
+                onChange={this.handleChange}
+                value={this.peers}
+                placeholder="2"
+                className="input-xlarge"
+              />
+              <p className="help-block">Also referred to as templates</p>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label class="control-label" for="users">
+              Users:
+            </label>
+            <div className="controls">
+              <input
+                id="users"
+                size="4"
+                name="textinput-1"
+                type="text"
+                onChange={this.handleChange}
+                value={this.users}
+                placeholder="1"
+                className="input-xlarge"
+              />
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label className="control-label" for="doublebutton-0" />
+            <div className="controls">
+              <button
+                id="generate"
+                onClick={this.generateClick}
+                name="doublebutton-0"
+                className="btn btn-success">
+                Generate Org Artifacts
+              </button>
+            </div>
+          </div>
+
+          <div className="control-group">
+            <label className="control-label" for="doublebutton-0" />
+            <div className="controls">{Status}</div>
+          </div>
+        </fieldset>
+      </form>
+    );
+  }
 }
 
 export default AddOrganization;
