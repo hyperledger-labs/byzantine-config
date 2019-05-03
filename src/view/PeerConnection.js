@@ -99,7 +99,7 @@ class PeerConnection extends Component {
 
     if (this.state.status) {
       Status = (
-        <div class="alert alert-danger" role="alert">
+        <div className="alert alert-danger" role="alert">
           {this.state.status}
         </div>
       );
@@ -110,7 +110,7 @@ class PeerConnection extends Component {
         <fieldset>
           <legend>Connection to a HLF Peer Node</legend>
           <div className="control-group">
-            <label className="control-label" for="userid">
+            <label className="control-label" htmlFor="userid">
               User Id:
             </label>
             <div className="controls">
@@ -128,7 +128,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="peernode">
+            <label className="control-label" htmlFor="peernode">
               Peer Node URL:
             </label>
             <div className="controls">
@@ -146,7 +146,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="channel">
+            <label className="control-label" htmlFor="channel">
               Channel Id:
             </label>
             <div className="controls">
@@ -164,7 +164,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="creds">
+            <label className="control-label" htmlFor="creds">
               Credential Keystore Path:
             </label>
             <div className="controls">
@@ -178,7 +178,7 @@ class PeerConnection extends Component {
               <input
                 id="creds"
                 size="80"
-                readonly="true"
+                readOnly={true}
                 name="textinput-1"
                 type="text"
                 onChange={this.handleChange}
@@ -193,7 +193,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="creds">
+            <label className="control-label" htmlFor="creds">
               Platform Binaries Path:
             </label>
             <div className="controls">
@@ -206,7 +206,7 @@ class PeerConnection extends Component {
               </button>{' '}
               <input
                 id="crypto"
-                readonly="true"
+                readOnly={true}
                 size="80"
                 name="textinput-1"
                 type="text"
@@ -221,7 +221,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label className="control-label" for="doublebutton-0" />
+            <label className="control-label" htmlFor="doublebutton-0" />
             <div className="controls">
               <button
                 id="generate"
@@ -234,7 +234,7 @@ class PeerConnection extends Component {
           </div>
 
           <div className="control-group">
-            <label className="control-label" for="doublebutton-0" />
+            <label className="control-label" htmlFor="doublebutton-0" />
             <div className="controls">{Status}</div>
           </div>
         </fieldset>

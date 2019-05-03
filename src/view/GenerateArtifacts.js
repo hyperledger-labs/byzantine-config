@@ -25,20 +25,19 @@ class AddConfigTx extends Component {
   constructor(props) {
     super(props);
     this.state = global.orgyaml;
+    this.state.current = '';
+    this.state.policies = null;
     this.operations = [];
-    this.setState({ current: '' });
     this.configblock = null;
     this.orgjson = null;
     this.modifiedjson = null;
     this.block = null;
-    this.setState({ policies: null });
   }
 
   componentDidMount() {
     let current = '';
     var ipcRenderer = electron.ipcRenderer;
 
-    // let response = ipcRenderer.sendSync('orggen', JSON.stringify(this.state));
     let response = ipcRenderer.sendSync('addtx', JSON.stringify(this.state));
 
     if (response.indexOf('ERROR') >= 0) {
@@ -104,7 +103,7 @@ class AddConfigTx extends Component {
       // this.state.policies = policies;
 
       this.configblock = JSON.parse(response);
-      current = 'Configuration Block retrrieved...';
+      current = 'Configuration Block retrieved...';
     }
 
     this.operations.push(current);

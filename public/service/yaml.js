@@ -1,5 +1,5 @@
 'use strict';
-/** 
+/**
 Copyright 2018 Keyhole Software LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,18 +43,16 @@ var orgYaml = function(json) {
 
   logger.debug('Converted to Org Yaml ' + yaml);
 
-  // write to file system
-
+  // write organization yaml to file system
   var fs = require('fs');
   var filepath = userpath + '/' + json.name + '.yaml';
 
   fs.writeFileSync(filepath, yaml);
 
-  // Exceute crypto
-
+  // Execute cryptogen with created yaml config
   let binpath = '"' + global.config.bin_path + '/cryptogen"';
   const { execSync } = require('child_process');
-  const testscript = execSync(
+  execSync(
     binpath +
       ' generate --output="' +
       userpath +
@@ -71,7 +69,6 @@ var orgYaml = function(json) {
 var configTx = function(json) {
   let jsonyaml = {};
   let orgs = [];
-  console.log('Name=' + json.domain);
   let org = {};
   org['&' + json.name] = {
     Name: json.name + 'MSP',
@@ -83,12 +80,10 @@ var configTx = function(json) {
   jsonyaml.Organizations = orgs;
   let yaml = yamljs.stringify(jsonyaml);
 
-  // format label...
+  // remove the ':' from the org anchor
+  yaml = yaml.replace(`${json.name}:`, `${json.name}`);
 
-  let index = yaml.indexOf('&') + json.name.length;
-  yaml = yaml.substr(0, index) + yaml.substr(index + 2);
-
-  logger.debug('Converted to Org ConfigTX Yaml ' + yaml);
+  logger.debug('Converted to Org ConfigTX Yaml:\n' + yaml);
 
   // write to file system
 
@@ -148,7 +143,7 @@ var computeUpdateDeltaPb = function(channel, original, modified, updated) {
 
   let binpath = '"' + global.config.bin_path + '/configtxlator"';
   const { execSync } = require('child_process');
-  const testscript = execSync(
+  execSync(
     binpath +
       ' compute_update --channel_id ' +
       channel +
@@ -165,11 +160,11 @@ var computeUpdateDeltaPb = function(channel, original, modified, updated) {
 };
 
 var decodeToJson = function(input) {
-  // Exceute crypto
+  // Execute configtxlator
 
   let binpath = '"' + global.config.bin_path + '/configtxlator"';
   const { execSync } = require('child_process');
-  const testscript = execSync(
+  execSync(
     binpath +
       ' proto_decode --input "' +
       input +
@@ -197,7 +192,7 @@ var createEnvelope = function(orgname) {
 
   fs.writeFileSync(envelopeFileName, JSON.stringify(envelope), err => {
     if (err) throw err;
-    logger.info('Envelope file was succesfully created!');
+    logger.info('Envelope file was successfully created!');
   });
 
   return 'Modified Envelope Created -' + envelopeFileName;
@@ -206,11 +201,12 @@ var createEnvelope = function(orgname) {
 var convertEnvelope = function(orgname) {
   let envelopeFileName = userpath + '/' + orgname + '_update_in_envelope.json';
   let outputFileName = userpath + '/' + orgname + '_update_in_envelope.pb';
-  // Exceute crypto
+
+  // Execute configtxlator
 
   let binpath = '"' + global.config.bin_path + '/configtxlator"';
   const { execSync } = require('child_process');
-  const testscript = execSync(
+  execSync(
     binpath +
       ' proto_encode --input "' +
       envelopeFileName +
