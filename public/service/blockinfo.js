@@ -24,36 +24,31 @@ var util = require('./util.js');
 
 logger.setLevel(config.loglevel);
 
-var getBlockInfo = function (channel_id) {
+var getBlockInfo = function(channel_id) {
+  return Promise.resolve()
+    .then(() => {
+      return util.connectChannel(channel_id);
+    })
+    .then(c => {
+      c.initialize();
 
-    return Promise.resolve().then(() => {
-        return util.connectChannel(channel_id);
-
-    }).then((c) => {
-
-
-        c.initialize();
-      
-
-        return c.queryInfo();
-    }).then((query_responses) => {
-        var result = JSON.stringify(query_responses);
-        if (result == '' || result == null) {
-            util.removeChannel(channel_id);
-
-        }
-
-        logger.debug("returned blockinfo result");
-
-        return result;
-    }).catch((err) => {
-        logger.error("Block INFO Catch", err);
+      return c.queryInfo();
+    })
+    .then(query_responses => {
+      var result = JSON.stringify(query_responses);
+      if (result == '' || result == null) {
         util.removeChannel(channel_id);
-        throw err;
+      }
 
+      logger.debug('returned blockinfo result');
+
+      return result;
+    })
+    .catch(err => {
+      logger.error('Block INFO Catch', err);
+      util.removeChannel(channel_id);
+      throw err;
     });
-
 };
-
 
 exports.getBlockInfo = getBlockInfo;
