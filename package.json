@@ -51,10 +51,7 @@
   "build": {
     "appId": "com.keyholesoftware.byzantine-config",
     "productName": "Byzantine Config",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
+    "files": ["build/**/*", "node_modules/**/*"],
     "directories": {
       "buildResources": "assets",
       "output": "dist"
@@ -69,10 +66,5 @@
   },
   "author": "Keyhole Software",
   "homepage": "./",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }

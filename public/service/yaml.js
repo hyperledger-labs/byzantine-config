@@ -27,283 +27,281 @@ var userpath = electron.app.getPath('userData');
 
 logger.setLevel(config.loglevel);
 
-var orgYaml = function (json) {
+var orgYaml = function(json) {
+  let jsonyaml = {};
 
-    let jsonyaml = {};
-
-    jsonyaml.PeerOrgs = [{ Name: json.name, Domain: json.domain, EnableNodeOUs: true, Template: { Count: json.peers }, Users: { Count: json.users } }];
-    let yaml = yamljs.stringify(jsonyaml);
-
-    logger.debug("Converted to Org Yaml " + yaml);
-
-    // write to file system 
-
-    var fs = require('fs');
-    var filepath =  userpath +'/' + json.name + '.yaml';
-
-    fs.writeFileSync(filepath, yaml);
-
-    // Exceute crypto 
-
-    let binpath = '"'+global.config.bin_path + '/cryptogen"';
-    const { execSync } = require('child_process');
-    const testscript = execSync(binpath+' generate --output="'+userpath+'/crypto-config" --config="' + userpath + '/' + json.name + '.yaml"');
-
- 
-    return;
-
-}
-
-
-var configTx = function (json) {
-
-    let jsonyaml = {};
-    let orgs = [];
-    console.log("Name=" + json.domain);
-    let org = {};
-    org['&' + json.name] = { Name: json.name + "MSP", ID: json.name + 'MSP', MSPDir: 'crypto-config/peerOrganizations/' + json.domain + '/msp', AnchorPeers: [{ Host: "peer0." + json.domain, port: 7051 }] };
-    orgs.push(org);
-    jsonyaml.Organizations = orgs;
-    let yaml = yamljs.stringify(jsonyaml);
-
-    // format label...
-
-    let index = yaml.indexOf('&') + json.name.length;
-    yaml = yaml.substr(0, index) + yaml.substr(index + 2);
-
-
-    logger.debug("Converted to Org ConfigTX Yaml " + yaml);
-
-    // write to file system 
-
-    var fs = require('fs');
-    var filepath = userpath+"/configtx.yaml";
-
-    fs.writeFileSync(filepath, yaml);
-
-    // create directory
-
-    if (!fs.existsSync(userpath+'/channel-artifacts')){
-        fs.mkdirSync(userpath+'/channel-artifacts');
+  jsonyaml.PeerOrgs = [
+    {
+      Name: json.name,
+      Domain: json.domain,
+      EnableNodeOUs: true,
+      Template: { Count: json.peers },
+      Users: { Count: json.users }
     }
+  ];
+  let yaml = yamljs.stringify(jsonyaml);
 
-    //get update JSON
+  logger.debug('Converted to Org Yaml ' + yaml);
 
-    const { execSync } = require('child_process');
-    let output = userpath+'/channel-artifacts/' + json.name + '.json';
-    let binpath = '"'+global.config.bin_path + '/configtxgen"';
+  // write to file system
 
-    const configtxgen = execSync('export FABRIC_CFG_PATH="'+userpath+'" && '+binpath+' -printOrg ' + json.name + 'MSP > "' + output+'"');
-    
-    let contents = fs.readFileSync(output,'utf8');
-  
-    return contents;
-}
+  var fs = require('fs');
+  var filepath = userpath + '/' + json.name + '.yaml';
 
+  fs.writeFileSync(filepath, yaml);
 
+  // Exceute crypto
 
-var convertToPb = function (fileName,pbfileName) {
+  let binpath = '"' + global.config.bin_path + '/cryptogen"';
+  const { execSync } = require('child_process');
+  const testscript = execSync(
+    binpath +
+      ' generate --output="' +
+      userpath +
+      '/crypto-config" --config="' +
+      userpath +
+      '/' +
+      json.name +
+      '.yaml"'
+  );
 
+  return;
+};
 
-    let binpath = '"'+global.config.bin_path + '/configtxlator"';
+var configTx = function(json) {
+  let jsonyaml = {};
+  let orgs = [];
+  console.log('Name=' + json.domain);
+  let org = {};
+  org['&' + json.name] = {
+    Name: json.name + 'MSP',
+    ID: json.name + 'MSP',
+    MSPDir: 'crypto-config/peerOrganizations/' + json.domain + '/msp',
+    AnchorPeers: [{ Host: 'peer0.' + json.domain, port: 7051 }]
+  };
+  orgs.push(org);
+  jsonyaml.Organizations = orgs;
+  let yaml = yamljs.stringify(jsonyaml);
 
-    // Exceute crypto 
-    const { execSync } = require('child_process');
-    const testscript = execSync(binpath+' proto_encode --input "'+fileName+'" --type common.Config --output "'+pbfileName+'"');
+  // format label...
 
-    return  "Converted "+fileName+" to Protocol Buffer";
+  let index = yaml.indexOf('&') + json.name.length;
+  yaml = yaml.substr(0, index) + yaml.substr(index + 2);
 
-}
+  logger.debug('Converted to Org ConfigTX Yaml ' + yaml);
 
+  // write to file system
 
+  var fs = require('fs');
+  var filepath = userpath + '/configtx.yaml';
 
-var computeUpdateDeltaPb = function (channel,original,modified,updated) {
+  fs.writeFileSync(filepath, yaml);
 
-    // Exceute crypto 
+  // create directory
 
+  if (!fs.existsSync(userpath + '/channel-artifacts')) {
+    fs.mkdirSync(userpath + '/channel-artifacts');
+  }
 
-    let binpath = '"'+global.config.bin_path + '/configtxlator"';
-    const { execSync } = require('child_process');
-    const testscript = execSync(binpath+' compute_update --channel_id '+channel+' --original "'+original+'" --updated "'+modified+'" --output "'+updated+'"');
+  //get update JSON
 
-    return  "Created Updated PB -"+updated;
+  const { execSync } = require('child_process');
+  let output = userpath + '/channel-artifacts/' + json.name + '.json';
+  let binpath = '"' + global.config.bin_path + '/configtxgen"';
 
-}
+  const configtxgen = execSync(
+    'export FABRIC_CFG_PATH="' +
+      userpath +
+      '" && ' +
+      binpath +
+      ' -printOrg ' +
+      json.name +
+      'MSP > "' +
+      output +
+      '"'
+  );
 
+  let contents = fs.readFileSync(output, 'utf8');
 
-var decodeToJson = function (input) {
+  return contents;
+};
 
-    // Exceute crypto 
+var convertToPb = function(fileName, pbfileName) {
+  let binpath = '"' + global.config.bin_path + '/configtxlator"';
 
-    let binpath = '"'+global.config.bin_path + '/configtxlator"';
-    const { execSync } = require('child_process');
-    const testscript = execSync(binpath+' proto_decode --input "'+ input+'.pb" --type common.ConfigUpdate --output "'+input+'.json"');
+  // Exceute crypto
+  const { execSync } = require('child_process');
+  const testscript = execSync(
+    binpath +
+      ' proto_encode --input "' +
+      fileName +
+      '" --type common.Config --output "' +
+      pbfileName +
+      '"'
+  );
 
-    return  "Decoded to JSON -"+input;
+  return 'Converted ' + fileName + ' to Protocol Buffer';
+};
 
-}
+var computeUpdateDeltaPb = function(channel, original, modified, updated) {
+  // Exceute crypto
 
+  let binpath = '"' + global.config.bin_path + '/configtxlator"';
+  const { execSync } = require('child_process');
+  const testscript = execSync(
+    binpath +
+      ' compute_update --channel_id ' +
+      channel +
+      ' --original "' +
+      original +
+      '" --updated "' +
+      modified +
+      '" --output "' +
+      updated +
+      '"'
+  );
 
-var createEnvelope = function (orgname) {
+  return 'Created Updated PB -' + updated;
+};
 
+var decodeToJson = function(input) {
+  // Exceute crypto
 
-    let envelopeFileName = userpath+'/'+orgname+'_update_in_envelope.json';
-    let modified = userpath+'/'+orgname+'_update.json';
+  let binpath = '"' + global.config.bin_path + '/configtxlator"';
+  const { execSync } = require('child_process');
+  const testscript = execSync(
+    binpath +
+      ' proto_decode --input "' +
+      input +
+      '.pb" --type common.ConfigUpdate --output "' +
+      input +
+      '.json"'
+  );
 
-    let json = fs.readFileSync(modified, 'utf8');
-    var o = JSON.parse(json);
+  return 'Decoded to JSON -' + input;
+};
 
-    var envelope = {"payload":{"header":{"channel_header":{"channel_id":"mychannel", "type":2}},"data":{"config_update": o }}};
-     
-    fs.writeFileSync(envelopeFileName, JSON.stringify(envelope), (err) => {
-        if (err) throw err;
-        logger.info("Envelope file was succesfully created!");
-    
-      });
+var createEnvelope = function(orgname) {
+  let envelopeFileName = userpath + '/' + orgname + '_update_in_envelope.json';
+  let modified = userpath + '/' + orgname + '_update.json';
 
+  let json = fs.readFileSync(modified, 'utf8');
+  var o = JSON.parse(json);
 
-    return  "Modified Envelope Created -"+envelopeFileName;
+  var envelope = {
+    payload: {
+      header: { channel_header: { channel_id: 'mychannel', type: 2 } },
+      data: { config_update: o }
+    }
+  };
 
-}
+  fs.writeFileSync(envelopeFileName, JSON.stringify(envelope), err => {
+    if (err) throw err;
+    logger.info('Envelope file was succesfully created!');
+  });
 
+  return 'Modified Envelope Created -' + envelopeFileName;
+};
 
-var convertEnvelope = function (orgname) {
+var convertEnvelope = function(orgname) {
+  let envelopeFileName = userpath + '/' + orgname + '_update_in_envelope.json';
+  let outputFileName = userpath + '/' + orgname + '_update_in_envelope.pb';
+  // Exceute crypto
 
-    let envelopeFileName = userpath+'/'+orgname+'_update_in_envelope.json';
-    let outputFileName = userpath+'/'+orgname+'_update_in_envelope.pb';
-    // Exceute crypto 
+  let binpath = '"' + global.config.bin_path + '/configtxlator"';
+  const { execSync } = require('child_process');
+  const testscript = execSync(
+    binpath +
+      ' proto_encode --input "' +
+      envelopeFileName +
+      '" --type common.Envelope --output "' +
+      outputFileName +
+      '"'
+  );
 
-    let binpath = '"'+global.config.bin_path + '/configtxlator"';
-    const { execSync } = require('child_process');
-    const testscript = execSync(binpath+' proto_encode --input "'+envelopeFileName+'" --type common.Envelope --output "'+outputFileName+'"');
-
-    return "PB Envelope created in: " + outputFileName;
-
-}
-
+  return 'PB Envelope created in: ' + outputFileName;
+};
 
 var recurse = function(obj) {
- 
-
-    for (var k in obj)
-    {
-        
-        if (k == 'rules') {
-          
-            delete obj[k][0].Type;
-        }
-
-        if (k == 'rule') {
-
-              delete obj[k].Type; 
-              if (obj[k].n_out_of) {
-
-                  let value = obj[k].n_out_of.N;
-                  delete obj[k].n_out_of.N;
-                  obj[k].n_out_of.n =  value;
-
-              }
-
-        }
-
-
-        if (k == 'rule') {
-
-            delete obj[k].Type; 
-            if (obj[k].n_out_of) {
-
-                let value = obj[k].n_out_of.N;
-                delete obj[k].n_out_of.N;
-                obj[k].n_out_of.n =  value;
-
-            }
-
-      }
-
-
-
-
-
-        if (k == 'identities') {
-
-         let classification = obj[k][0].principal_classification; 
-         let msp_identifier = obj[k][0].msp_identifier;
-         let role = obj[k][0].Role;   
-         
-         delete obj[k][0];
-          
-         obj[k] = [ {principal: { msp_identifier: msp_identifier, role: 'ADMIN' }, principal_classification: 'ROLE'} ];
-
-      
-        }    
-
-
-        if (k == 'root_certs') {
-
-           let cert = obj[k][0];
-           let begin =  '-----BEGIN CERTIFICATE-----\n';
-           let end = '\n-----END CERTIFICATE-----\n';
-           obj[k][0] = cert.replace(begin,'').replace(end,'');
-
-        }
-
-
-
-        if (k == 'admins') {
-
-            let admincert = obj[k][0];
-            let begin =  '-----BEGIN CERTIFICATE-----\n';
-            let end = '\n-----END CERTIFICATE-----\n';
-            obj[k][0] = admincert.replace(begin,'').replace(end,'');
- 
-         }
-
-        
-
-
-
-        if (k == 'tls_root_certs') {
-        
-            let rootcert = obj[k][0];
-            let begin =  '-----BEGIN CERTIFICATE-----\n';
-            let end = '\n-----END CERTIFICATE-----\n';
-            obj[k][0] = rootcert.replace(begin,'').replace(end,'');
- 
-         }
- 
-
-
-        if (typeof obj[k] == "object" && obj[k] !== null) {
-            recurse(obj[k]);
-        }    
-        else {
-            
-           
-
-        }  
+  for (var k in obj) {
+    if (k == 'rules') {
+      delete obj[k][0].Type;
     }
 
-    
+    if (k == 'rule') {
+      delete obj[k].Type;
+      if (obj[k].n_out_of) {
+        let value = obj[k].n_out_of.N;
+        delete obj[k].n_out_of.N;
+        obj[k].n_out_of.n = value;
+      }
+    }
 
-}
+    if (k == 'rule') {
+      delete obj[k].Type;
+      if (obj[k].n_out_of) {
+        let value = obj[k].n_out_of.N;
+        delete obj[k].n_out_of.N;
+        obj[k].n_out_of.n = value;
+      }
+    }
 
+    if (k == 'identities') {
+      let classification = obj[k][0].principal_classification;
+      let msp_identifier = obj[k][0].msp_identifier;
+      let role = obj[k][0].Role;
+
+      delete obj[k][0];
+
+      obj[k] = [
+        {
+          principal: { msp_identifier: msp_identifier, role: 'ADMIN' },
+          principal_classification: 'ROLE'
+        }
+      ];
+    }
+
+    if (k == 'root_certs') {
+      let cert = obj[k][0];
+      let begin = '-----BEGIN CERTIFICATE-----\n';
+      let end = '\n-----END CERTIFICATE-----\n';
+      obj[k][0] = cert.replace(begin, '').replace(end, '');
+    }
+
+    if (k == 'admins') {
+      let admincert = obj[k][0];
+      let begin = '-----BEGIN CERTIFICATE-----\n';
+      let end = '\n-----END CERTIFICATE-----\n';
+      obj[k][0] = admincert.replace(begin, '').replace(end, '');
+    }
+
+    if (k == 'tls_root_certs') {
+      let rootcert = obj[k][0];
+      let begin = '-----BEGIN CERTIFICATE-----\n';
+      let end = '\n-----END CERTIFICATE-----\n';
+      obj[k][0] = rootcert.replace(begin, '').replace(end, '');
+    }
+
+    if (typeof obj[k] == 'object' && obj[k] !== null) {
+      recurse(obj[k]);
+    } else {
+    }
+  }
+};
 
 var removeRuleType = function(json) {
+  let result = JSON.parse(JSON.stringify(json));
 
-    let result = JSON.parse( JSON.stringify(json) );
+  recurse(result);
 
-     recurse(result);
-
-    return result;
-}
- 
+  return result;
+};
 
 exports.orgYaml = orgYaml;
 exports.configTx = configTx;
 exports.convertToPb = convertToPb;
-exports.removeRuleType =  removeRuleType;
-exports.computeUpdateDeltaPb =  computeUpdateDeltaPb;
+exports.removeRuleType = removeRuleType;
+exports.computeUpdateDeltaPb = computeUpdateDeltaPb;
 exports.decodeToJson = decodeToJson;
 exports.createEnvelope = createEnvelope;
 exports.convertEnvelope = convertEnvelope;
-
