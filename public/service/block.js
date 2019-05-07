@@ -22,7 +22,7 @@ var sha = require('js-sha256');
 var asn = require('asn1.js');
 var config = require('../config.js');
 
-logger.setLevel(config.loglevel);
+logger.level = config.loglevel;
 
 var getBlock = function(channel_id, blockNumber) {
   console.log('executing block...');

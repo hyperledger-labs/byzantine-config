@@ -20,7 +20,7 @@ var config = require('../config.js');
 var log4js = require('log4js');
 var logger = log4js.getLogger('service/util.js');
 
-logger.setLevel(config.loglevel);
+logger.level = config.loglevel;
 
 var channelid = null;
 var client = null;

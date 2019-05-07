@@ -22,7 +22,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger('service/blockinfo.js');
 var util = require('./util.js');
 
-logger.setLevel(config.loglevel);
+logger.level = config.loglevel;
 
 var getBlockInfo = function(channel_id) {
   return Promise.resolve()

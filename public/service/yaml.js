@@ -25,7 +25,7 @@ const electron = require('electron');
 
 var userpath = electron.app.getPath('userData');
 
-logger.setLevel(config.loglevel);
+logger.level = config.loglevel;
 
 var orgYaml = function(json) {
   let jsonyaml = {};
