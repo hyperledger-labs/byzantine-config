@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "asn1.js": "^5.0.1",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "electron-debug": "^2.2.0",
     "electron-is-dev": "^1.1.0",
     "fabric-client": "1.4.1",
