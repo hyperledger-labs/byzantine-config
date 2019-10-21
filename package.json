@@ -41,7 +41,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron --inspect .\"",
     "electron": "electron .",
     "electron-pack": "build -ml",
     "electron-pack-linux": "build -l",
@@ -51,7 +51,10 @@
   "build": {
     "appId": "com.keyholesoftware.byzantine-config",
     "productName": "Byzantine Config",
-    "files": ["build/**/*", "node_modules/**/*"],
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
     "directories": {
       "buildResources": "assets",
       "output": "dist"
@@ -66,5 +69,10 @@
   },
   "author": "Keyhole Software",
   "homepage": "./",
-  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

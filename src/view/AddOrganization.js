@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React, { Component } from 'react';
-const electron = window.require('electron');
+const { ipcRenderer } = window.require('electron');
 
 class AddOrganization extends Component {
   constructor(props) {
@@ -49,7 +49,6 @@ class AddOrganization extends Component {
         peers: this.state.peers,
         users: this.state.users
       };
-      var ipcRenderer = electron.ipcRenderer;
       status = ipcRenderer.sendSync('orggen', JSON.stringify(this.state));
       this.props.history.push('/genartifacts');
     }
@@ -57,35 +56,15 @@ class AddOrganization extends Component {
     this.setState({ status: status });
   };
 
-  addArtifactsClick = e => {
-    e.preventDefault();
-    this.props.history.push('/genartifacts');
-  };
-
   render() {
     let Status = <div />;
 
     if (this.state.status) {
-      if (this.state.status.indexOf('SUCCESS:') >= 0) {
-        Status = (
-          <div class="alert alert-success" role="alert">
-            {this.state.status}...{' '}
-            <button
-              id="genconfigtx"
-              onClick={this.addArtifactsClick}
-              name="genconfig"
-              className="btn btn-primary">
-              Generate Config Tx
-            </button>
-          </div>
-        );
-      } else {
-        Status = (
-          <div class="alert alert-danger" role="alert">
-            {this.state.status}
-          </div>
-        );
-      }
+      Status = (
+        <div className="alert alert-danger" role="alert">
+          {this.state.status}
+        </div>
+      );
     }
 
     return (
@@ -93,12 +72,12 @@ class AddOrganization extends Component {
         <fieldset>
           <legend>
             Add Org, Generate Crypto Material for Channel <b>{global.config.channelid}</b>{' '}
-            <button class="btn btn-link" onClick={this.cancelClick}>
+            <button className="btn btn-link" onClick={this.cancelClick}>
               Cancel
             </button>{' '}
           </legend>
           <div className="control-group">
-            <label className="control-label" for="name">
+            <label className="control-label" htmlFor="name">
               Name:
             </label>
             <div className="controls">
@@ -116,7 +95,7 @@ class AddOrganization extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="domain">
+            <label className="control-label" htmlFor="domain">
               Domain:
             </label>
             <div className="controls">
@@ -134,7 +113,7 @@ class AddOrganization extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="peers">
+            <label className="control-label" htmlFor="peers">
               Peers:
             </label>
             <div className="controls">
@@ -153,7 +132,7 @@ class AddOrganization extends Component {
           </div>
 
           <div className="control-group">
-            <label class="control-label" for="users">
+            <label className="control-label" htmlFor="users">
               Users:
             </label>
             <div className="controls">
@@ -171,7 +150,7 @@ class AddOrganization extends Component {
           </div>
 
           <div className="control-group">
-            <label className="control-label" for="doublebutton-0" />
+            <label className="control-label" htmlFor="doublebutton-0" />
             <div className="controls">
               <button
                 id="generate"
@@ -184,7 +163,7 @@ class AddOrganization extends Component {
           </div>
 
           <div className="control-group">
-            <label className="control-label" for="doublebutton-0" />
+            <label className="control-label" htmlFor="doublebutton-0" />
             <div className="controls">{Status}</div>
           </div>
         </fieldset>

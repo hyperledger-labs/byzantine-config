@@ -83,7 +83,7 @@ var connectChannel = function(channel_id) {
         channel_event_hub.connect(true);
 
         logger.info('Is Event Hub Connected ' + channel_event_hub.isconnected());
-        logger.info('Event Hub Registerd: ' + block_reg);
+        logger.info('Event Hub Registered: ' + block_reg);
       }
 
       return channel;

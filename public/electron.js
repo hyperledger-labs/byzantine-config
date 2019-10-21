@@ -20,6 +20,58 @@ var filesToDelete = [];
 
 let mainWindow;
 
+/**
+ * Types of Policies.
+ * @enum {number}
+ */
+const PolicyType = Object.freeze({ UNKNOWN: 0, SIGNATURE: 1, MSP: 2, IMPLICIT_META: 3 });
+
+/**
+ * Converts the String policy type values to their respective integer value.
+ * @param {Object} json The configuration json to convert.
+ * @return {Object} the converted configuration json
+ */
+const convertPolicyTypes = function convertConfigurationPolicyTypeValues(json) {
+  // create a deep copy
+  let convertedJson = JSON.parse(JSON.stringify(json));
+
+  // Convert policy types for existing orgs in channel
+  Object.values(convertedJson.channel_group.groups.Application.groups).forEach((org) => {
+    org.policies.Admins.policy.type = PolicyType[org.policies.Admins.policy.type];
+    org.policies.Writers.policy.type = PolicyType[org.policies.Writers.policy.type];
+    org.policies.Readers.policy.type = PolicyType[org.policies.Readers.policy.type];
+  });
+
+  // Convert orderer policy types
+  const ordererPolicies = convertedJson.channel_group.groups.Orderer.policies;
+  ordererPolicies.Admins.policy.type = PolicyType[ordererPolicies.Admins.policy.type];
+  ordererPolicies.Readers.policy.type = PolicyType[ordererPolicies.Readers.policy.type];
+  ordererPolicies.Writers.policy.type = PolicyType[ordererPolicies.Writers.policy.type];
+  ordererPolicies.BlockValidation.policy.type =
+    PolicyType[ordererPolicies.BlockValidation.policy.type];
+
+  // Convert orderer group policy types
+  Object.values(convertedJson.channel_group.groups.Orderer.groups).forEach((org) => {
+    org.policies.Admins.policy.type = PolicyType[org.policies.Admins.policy.type];
+    org.policies.Writers.policy.type = PolicyType[org.policies.Writers.policy.type];
+    org.policies.Readers.policy.type = PolicyType[org.policies.Readers.policy.type];
+  });
+
+  // Convert application policy types
+  const applicationPolicies = convertedJson.channel_group.groups.Application.policies;
+  applicationPolicies.Admins.policy.type = PolicyType[applicationPolicies.Admins.policy.type];
+  applicationPolicies.Readers.policy.type = PolicyType[applicationPolicies.Readers.policy.type];
+  applicationPolicies.Writers.policy.type = PolicyType[applicationPolicies.Writers.policy.type];
+
+  // Convert channel policy types
+  const channelPolicies = convertedJson.channel_group.policies;
+  channelPolicies.Admins.policy.type = PolicyType[channelPolicies.Admins.policy.type];
+  channelPolicies.Readers.policy.type = PolicyType[channelPolicies.Readers.policy.type];
+  channelPolicies.Writers.policy.type = PolicyType[channelPolicies.Writers.policy.type];
+
+  return convertedJson;
+};
+
 function deleteFolder(path) {
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach(function(file, index) {
@@ -114,7 +166,7 @@ function createWindow() {
     let json = JSON.parse(arg);
 
     try {
-      let yamlstring = yaml.orgYaml(json);
+      yaml.orgYaml(json);
       filesToDelete.push(userpath + '/' + json.name + '.yaml');
       event.returnValue = 'SUCCESS: Crypto Material Generated in crypto-config';
       global.orginfo = json;
@@ -133,7 +185,6 @@ function createWindow() {
 
   ipcMain.on('addtx', (event, arg) => {
     let json = JSON.parse(arg);
-
     event.returnValue = yaml.configTx(json);
   });
 
@@ -151,7 +202,7 @@ function createWindow() {
     let modified = userpath + '/modified.json';
     fs.writeFile(modified, JSON.stringify(global.modifiedjson), err => {
       if (err) throw err;
-      logger.info('The file was succesfully saved!');
+      logger.info('The modified JSON file was successfully saved!');
       let modifiedpb = userpath + '/modified_config.pb';
       event.returnValue = yaml.convertToPb(userpath + '/modified.json', modifiedpb);
 
@@ -164,12 +215,11 @@ function createWindow() {
     let json = global.originaljson;
 
     // write to file
-
     json = yaml.removeRuleType(json);
     let configjson = userpath + '/config.json';
     fs.writeFile(configjson, JSON.stringify(json), err => {
       if (err) throw err;
-      logger.info('The file was succesfully saved!');
+      logger.info('The original JSON file was successfully saved!');
 
       let configpb = userpath + '/config.pb';
       event.returnValue = yaml.convertToPb(configjson, configpb);
@@ -182,47 +232,17 @@ function createWindow() {
     let json = global.modifiedjson;
 
     // write to file
-
     json = yaml.removeRuleType(json);
     let configjson = userpath + '/config.json';
     fs.writeFile(configjson, JSON.stringify(json), err => {
       if (err) throw err;
-      logger.info('The file was succesfully saved!');
+      logger.info('The original JSON file was successfully saved!');
 
       let configpb = userpath + '/config.pb';
       event.returnValue = yaml.convertToPb(configjson, configpb);
       filesToDelete.push(configjson);
       filesToDelete.push(configpb);
     });
-  });
-
-  ipcMain.on('strip', (event, jsonstring) => {
-    let json = JSON.parse(jsonstring);
-
-    global.modifiedjson = json;
-
-    // Fix policy type
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Writers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Readers.policy.type = 1;
-
-    global.modifiedjson.channel_group.groups.Orderer.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Readers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.BlockValidation.policy.type = 3;
-
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Readers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Writers.policy.type = 1;
-
-    global.modifiedjson.channel_group.groups.Application.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Readers.policy.type = 3;
-
-    global.modifiedjson.channel_group.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Readers.policy.type = 3;
-    yaml.removeRuleType(global.modifiedjson);
   });
 
   ipcMain.on('computedelta', event => {
@@ -320,7 +340,8 @@ function createWindow() {
         const { execSync } = require('child_process');
 
         try {
-          const testexec = execSync(binpath + ' generate --help');
+          logger.info('Confirming Fabric binaries path');
+          execSync(binpath + ' generate --help');
         } catch (err) {
           event.returnValue =
             'ERROR: cannot not find Fabric cryptogen and configtxgen binaries, make sure binary path is valid';
@@ -337,46 +358,7 @@ function createWindow() {
   ipcMain.on('mergeconfig', (event, jsonstring) => {
     let configupdate = JSON.parse(jsonstring);
 
-    //config = global.configblock.data.data[0].payload.data.config;
-    global.modifiedjson = global.configblock.data.data[0].payload.data.config;
-
-    // Fix policy type
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Writers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Readers.policy.type = 1;
-
-    let groups = global.modifiedjson.channel_group.groups.Application.groups;
-
-    for (var name in groups) {
-      if (groups.hasOwnProperty(name)) {
-        global.modifiedjson.channel_group.groups.Application.groups[
-          name
-        ].policies.Admins.policy.type = 1;
-        global.modifiedjson.channel_group.groups.Application.groups[
-          name
-        ].policies.Writers.policy.type = 1;
-        global.modifiedjson.channel_group.groups.Application.groups[
-          name
-        ].policies.Readers.policy.type = 1;
-      }
-    }
-
-    global.modifiedjson.channel_group.groups.Orderer.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Readers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.BlockValidation.policy.type = 3;
-
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Readers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Writers.policy.type = 1;
-
-    global.modifiedjson.channel_group.groups.Application.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Readers.policy.type = 3;
-
-    global.modifiedjson.channel_group.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Readers.policy.type = 3;
+    global.modifiedjson = convertPolicyTypes(global.configblock.data.data[0].payload.data.config);
 
     global.modifiedjson = yaml.removeRuleType(global.modifiedjson);
 
@@ -416,57 +398,16 @@ function createWindow() {
   });
 
   ipcMain.on('mergecrypto', (event, jsonstring) => {
-    let json = JSON.parse(jsonstring);
-    var filepath = userpath + '/channel-artifacts/' + global.orginfo.name + '.json';
+    let filePath = userpath + '/channel-artifacts/' + global.orginfo.name + '.json';
+    let orgJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    let orgjson = fs.readFileSync(filepath, 'utf8');
-
-    // convert string to JSON Object
-    var o = JSON.parse(orgjson);
-
-    global.modifiedjson = json;
-    // global.modifiedjson.channel_group.groups.Application.groups[global.orginfo.name + "MSP"] = o;
-
-    // Fix policy type
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Writers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups.Org1MSP.policies.Readers.policy.type = 1;
-
-    // global.modifiedjson.channel_group.groups.Application.groups[global.orginfo.name + "MSP"].policies.Admins.policy.type = 1;
-    // global.modifiedjson.channel_group.groups.Application.groups[global.orginfo.name + "MSP"].policies.Writers.policy.type = 1;
-    // global.modifiedjson.channel_group.groups.Application.groups[global.orginfo.name + "MSP"].policies.Readers.policy.type = 1;
-
-    global.modifiedjson.channel_group.groups.Orderer.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Readers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Orderer.policies.BlockValidation.policy.type = 3;
-
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Readers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Orderer.groups.OrdererOrg.policies.Writers.policy.type = 1;
-
-    global.modifiedjson.channel_group.groups.Application.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.groups.Application.policies.Readers.policy.type = 3;
-
-    global.modifiedjson.channel_group.policies.Admins.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Writers.policy.type = 3;
-    global.modifiedjson.channel_group.policies.Readers.policy.type = 3;
-
-    global.modifiedjson = yaml.removeRuleType(global.modifiedjson);
-
+    global.modifiedjson = convertPolicyTypes(JSON.parse(jsonstring));
     global.originaljson = JSON.parse(JSON.stringify(global.modifiedjson));
 
-    global.modifiedjson.channel_group.groups.Application.groups[global.orginfo.name + 'MSP'] = o;
+    // Append the new org to the json
     global.modifiedjson.channel_group.groups.Application.groups[
       global.orginfo.name + 'MSP'
-    ].policies.Admins.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups[
-      global.orginfo.name + 'MSP'
-    ].policies.Writers.policy.type = 1;
-    global.modifiedjson.channel_group.groups.Application.groups[
-      global.orginfo.name + 'MSP'
-    ].policies.Readers.policy.type = 1;
+    ] = orgJson;
 
     global.modifiedjson = yaml.removeRuleType(global.modifiedjson);
 

@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 import React, { Component } from 'react';
-
-const electron = window.require('electron');
-// const remote = electron.remote;
+const { ipcRenderer } = window.require('electron');
 
 class Configuration extends Component {
   constructor(props) {
@@ -28,7 +26,6 @@ class Configuration extends Component {
   }
 
   componentDidMount() {
-    var ipcRenderer = electron.ipcRenderer;
     var block = ipcRenderer.sendSync('block', 'blockargs');
     var json = JSON.parse(block);
 
@@ -158,14 +155,14 @@ class Configuration extends Component {
   render() {
     let orgs = [];
     let EditSave = () => (
-      <button class="btn btn-link" onClick={this.clickEdit}>
+      <button className="btn btn-link" onClick={this.clickEdit}>
         Edit
       </button>
     );
 
     if (this.state.edit) {
       EditSave = () => (
-        <button class="btn btn-link" onClick={this.clickSave}>
+        <button className="btn btn-link" onClick={this.clickSave}>
           Save
         </button>
       );
@@ -204,7 +201,7 @@ class Configuration extends Component {
       <div>
         <legend>
           Orgs and Configuration{' '}
-          <button class="btn btn-link" onClick={this.clickAddOrg}>
+          <button className="btn btn-link" onClick={this.clickAddOrg}>
             Add Org
           </button>{' '}
           <EditSave />{' '}
@@ -265,7 +262,7 @@ class Configuration extends Component {
                   <form className="form-horizontal">
                     <div className="control-group">
                       <fieldset>
-                        <div class="controls">
+                        <div className="controls">
                           <b>Batch Size:</b>{' '}
                           <input
                             ref="batchsize"
@@ -278,7 +275,7 @@ class Configuration extends Component {
                             className="input-xlarge"
                           />
                         </div>
-                        <div class="controls">
+                        <div className="controls">
                           <b>Consensus Type:</b>{' '}
                           <input
                             readOnly={this.state.edit === false}
@@ -291,7 +288,7 @@ class Configuration extends Component {
                             className="input-xlarge"
                           />
                         </div>
-                        <div class="controls">
+                        <div className="controls">
                           <b>Batch Timeout:</b>{' '}
                           <input
                             readOnly={this.state.edit === false}
@@ -329,7 +326,7 @@ class Configuration extends Component {
                 </div>
                 <div className="col-md-12">
                   <div>
-                    <div class="controls">
+                    <div className="controls">
                       <b>Hashing Algorithm:</b>{' '}
                       <input
                         readOnly={this.state.edit === false}
