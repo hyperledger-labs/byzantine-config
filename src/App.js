@@ -9,6 +9,7 @@ import ConfigUpdate from './view/ConfigUpdate.js';
 import { BrowserRouter, Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import EnrollUser from './view/EnrollUser.js';
 
 // const electron = window.require('electron');
 // const fs = electron.remote.require('fs');
@@ -34,6 +35,7 @@ class App extends Component {
           <Route exact path="/config" component={Configuration} />
           <Route exact path="/addorg" component={AddOrganization} />
           <Route exact path="/genartifacts" component={GenerateArtifacts} />
+          <Route exact path="/enrolluser" component={EnrollUser} />
           <Route exact path="/connection" component={PeerConnection} />
           <Route exact path="/configupdate" component={ConfigUpdate} />
           <Route path="/">
