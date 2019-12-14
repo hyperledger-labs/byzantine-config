@@ -101,6 +101,12 @@ class Configuration extends Component {
     this.props.history.push('/addorg');
   };
 
+
+  clickEnrollUser = e => {
+    e.preventDefault();
+    this.props.history.push("/enrolluser");
+  }
+
   clickEdit = e => {
     e.preventDefault();
     this.setState({ edit: true });
@@ -204,6 +210,9 @@ class Configuration extends Component {
           <button className="btn btn-link" onClick={this.clickAddOrg}>
             Add Org
           </button>{' '}
+          <button class="btn btn-link" onClick={this.clickEnrollUser}>
+            Enroll User
+          </button>{' '} 
           <EditSave />{' '}
         </legend>
 

@@ -13,12 +13,15 @@ var logger = log4js.getLogger('service/electron.js');
 var fs = require('fs');
 var config = require('./config.js');
 const os = require('os');
+const enroll = require('./service/enroll.js');
 
 var userpath = electron.app.getPath('userData');
 
 var filesToDelete = [];
 
 let mainWindow;
+
+let credspath;
 
 /**
  * Types of Policies.
@@ -178,6 +181,24 @@ function createWindow() {
     }
   });
 
+  
+  ipcMain.on('enrolluser', (event, arg) => {
+
+    let json = JSON.parse(arg);
+      
+      event.returnValue = "SUCCESS: User "+json.userid+" Certicates Generated";
+      global.orginfo = json;
+      let status = enroll.enrollUser(json.userid,credspath);
+
+    if (status == "ERROR") {
+      event.returnValue = "ERROR";
+      logger.info("ERROR: Enrolling user "+json.userid+" Failed, make sure admin credentials at this path "+credspath+" are valid for Certificate Authority  " + e);
+    
+    }
+
+  });
+
+
   ipcMain.on('defaultinfo', (event, arg) => {
     global.orginfo = { name: 'configupdate' };
     event.returnValue = 'config returned';
@@ -283,7 +304,7 @@ function createWindow() {
 
   ipcMain.on('connect', (event, jsonstring) => {
     let json = JSON.parse(jsonstring);
-    let credspath = json.creds;
+    credspath = json.creds;
     if (json.creds.indexOf('..') >= 0) {
       credspath = path.join(__dirname, json.creds);
     }
