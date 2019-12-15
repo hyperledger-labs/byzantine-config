@@ -1,17 +1,12 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const nativeImage = require('electron').nativeImage;
-
 const path = require('path');
-const url = require('url');
 const isDev = require('electron-is-dev');
-const hfc = require('fabric-client');
 const yaml = require('./service/yaml.js');
 var log4js = require('log4js');
 var logger = log4js.getLogger('service/electron.js');
 var fs = require('fs');
-var config = require('./config.js');
 const os = require('os');
 const enroll = require('./service/enroll.js');
 

@@ -47,6 +47,19 @@ Click the `Add Org` link and the UI will prompt you for the new organization nam
 The newly generated crypto artifacts (as well as an `updated config block <your_org_name>_update_in_envelope.pb` file) for your organization will be on disk. This screen allows you to open the containing folders to verify their existence and contents.
 ![](images/generated-pb.png)
 
+#### Create User Access Credentials
+
+Public and private access keys for a user to access an HLF network can be done with the `Add User` option.
+
+![](images/enroll-user-menu.png)
+
+Enter a user id and clicking the `Create` button will generate user credentials in the `keystore` directory.  
+
+![](images/usercreated.png)
+
+Clicking the `User Credentials Directory` button will open a file dialog where the credentials are located. 
+
+
 #### Sign the PB file
 
 The config PB file will need to be signed by the consortium (based upon policy settings). To do this, the following command must be issued:
