@@ -4071,6 +4071,17 @@ eyes@0.1.x:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/eyes/-/eyes-0.1.8.tgz#62cf120234c683785d902348a800ef3e0cc20bc0"
 
+fabric-ca-client@^1.0.0:
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/fabric-ca-client/-/fabric-ca-client-1.4.8.tgz#29415408d77b449e010ac38251b5eeddefaecdf3"
+  dependencies:
+    grpc "1.24.2"
+    jsrsasign "^7.2.2"
+    lodash.clone "4.5.0"
+    url "^0.11.0"
+    util "^0.10.3"
+    winston "^2.4.0"
+
 fabric-client@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/fabric-client/-/fabric-client-1.4.1.tgz#5a5091a9699343a826ae00a894b20811342ec7ab"
@@ -4580,7 +4591,7 @@ grpc@1.17.0:
     node-pre-gyp "^0.12.0"
     protobufjs "^5.0.3"
 
-grpc@^1.20.3:
+grpc@1.24.2, grpc@^1.20.3:
   version "1.24.2"
   resolved "https://registry.yarnpkg.com/grpc/-/grpc-1.24.2.tgz#76d047bfa7b05b607cbbe3abb99065dcefe0c099"
   dependencies:
@@ -6174,7 +6185,7 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
 
-lodash.clone@^4.5.0:
+lodash.clone@4.5.0, lodash.clone@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clone/-/lodash.clone-4.5.0.tgz#195870450f5a13192478df4bc3d23d2dea1907b6"
 
@@ -10083,6 +10094,12 @@ util@0.10.3:
   dependencies:
     inherits "2.0.1"
 
+util@^0.10.3:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.10.4.tgz#3aa0125bfe668a4672de58857d3ace27ecb76901"
+  dependencies:
+    inherits "2.0.3"
+
 util@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/util/-/util-0.11.1.tgz#3236733720ec64bb27f6e26f421aaa2e1b588d61"
@@ -10303,8 +10320,8 @@ websocket-driver@>=0.5.1:
     websocket-extensions ">=0.1.1"
 
 websocket-extensions@>=0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3, whatwg-encoding@^1.0.5:
   version "1.0.5"
@@ -10362,7 +10379,7 @@ window-size@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.4.tgz#f8e1aa1ee5a53ec5bf151ffa09742a6ad7697876"
 
-winston@^2.2.0:
+winston@^2.2.0, winston@^2.4.0:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.4.tgz#a01e4d1d0a103cf4eada6fc1f886b3110d71c34b"
   dependencies:
