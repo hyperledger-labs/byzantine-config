@@ -1991,8 +1991,8 @@ bluebird@^3.5.0, bluebird@^3.5.5:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
 
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.11.3, bn.js@^4.4.0:
-  version "4.11.8"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
+  version "4.11.9"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
 
 body-parser@1.19.0:
   version "1.19.0"
@@ -3548,8 +3548,8 @@ electron@^4.2.0:
     extract-zip "^1.0.3"
 
 elliptic@^6.0.0, elliptic@^6.2.3:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.2.tgz#05c5678d7173c049d8ca433552224a495d0e3762"
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.3.tgz#cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6"
   dependencies:
     bn.js "^4.4.0"
     brorand "^1.0.1"
@@ -4071,6 +4071,17 @@ eyes@0.1.x:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/eyes/-/eyes-0.1.8.tgz#62cf120234c683785d902348a800ef3e0cc20bc0"
 
+fabric-ca-client@^1.0.0:
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/fabric-ca-client/-/fabric-ca-client-1.4.11.tgz#9dcfda5c6150903547c35052ba156d8410eb67f2"
+  dependencies:
+    grpc "1.24.2"
+    jsrsasign "^8.0.16"
+    lodash.clone "4.5.0"
+    url "^0.11.0"
+    util "^0.10.3"
+    winston "^2.4.0"
+
 fabric-client@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/fabric-client/-/fabric-client-1.4.1.tgz#5a5091a9699343a826ae00a894b20811342ec7ab"
@@ -4580,7 +4591,7 @@ grpc@1.17.0:
     node-pre-gyp "^0.12.0"
     protobufjs "^5.0.3"
 
-grpc@^1.20.3:
+grpc@1.24.2, grpc@^1.20.3:
   version "1.24.2"
   resolved "https://registry.yarnpkg.com/grpc/-/grpc-1.24.2.tgz#76d047bfa7b05b607cbbe3abb99065dcefe0c099"
   dependencies:
@@ -5965,6 +5976,10 @@ jsrsasign@^7.2.2:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-7.2.2.tgz#ae5230cb5574451bb979a9cc697428c60f598d20"
 
+jsrsasign@^8.0.16:
+  version "8.0.20"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.20.tgz#37d8029c9d8f794d8ac8d8998bce319921491f11"
+
 jssha@^2.1.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/jssha/-/jssha-2.3.1.tgz#147b2125369035ca4b2f7d210dc539f009b3de9a"
@@ -6174,7 +6189,7 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
 
-lodash.clone@^4.5.0:
+lodash.clone@4.5.0, lodash.clone@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clone/-/lodash.clone-4.5.0.tgz#195870450f5a13192478df4bc3d23d2dea1907b6"
 
@@ -10083,6 +10098,12 @@ util@0.10.3:
   dependencies:
     inherits "2.0.1"
 
+util@^0.10.3:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.10.4.tgz#3aa0125bfe668a4672de58857d3ace27ecb76901"
+  dependencies:
+    inherits "2.0.3"
+
 util@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/util/-/util-0.11.1.tgz#3236733720ec64bb27f6e26f421aaa2e1b588d61"
@@ -10365,6 +10386,17 @@ window-size@^0.1.4:
 winston@^2.2.0:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.4.tgz#a01e4d1d0a103cf4eada6fc1f886b3110d71c34b"
+  dependencies:
+    async "~1.0.0"
+    colors "1.0.x"
+    cycle "1.0.x"
+    eyes "0.1.x"
+    isstream "0.1.x"
+    stack-trace "0.0.x"
+
+winston@^2.4.0:
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-2.4.5.tgz#f2e431d56154c4ea765545fc1003bd340c95b59a"
   dependencies:
     async "~1.0.0"
     colors "1.0.x"
