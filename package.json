@@ -21,7 +21,7 @@
     "react-dom": "^16.8.6",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.4.0",
     "fabric-ca-client": "^1.0.0"
   },
   "engines": {
