@@ -14,7 +14,7 @@
     "js-sha256": "^0.9.0",
     "json2yaml": "1.1.0",
     "jsonwebtoken": "^8.5.1",
-    "log4js": "^4.1.1",
+    "log4js": "^6.4.0",
     "react": "^16.8.6",
     "react-bootstrap": "^0.32.4",
     "react-bootstrap-table": "^4.3.1",
