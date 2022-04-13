@@ -1,0 +1,9 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+repository:
+  name: byzantine-config
+  description: GUI Utility that simplifies creating configuration blocks and generating user keys
+  homepage: https://byzantinetools.com/
+  archived: true
+  private: false
